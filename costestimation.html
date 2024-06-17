@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Estimation</title>
+    <style>
+    body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+}
+
+header {
+  position: relative;
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-image: url('header.jpeg'); /* Replace with your image path */
+  background-size: cover; /* Cover ensures the image covers the header area */
+  background-position: center; /* Center the background image */
+  color: #fff; /* Adjust text color for legibility if needed */
+    padding: 20px;
+    text-align: center;
+}
+header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 7px; /* Height of the gradient; adjust as needed */
+    background: linear-gradient(to bottom, transparent, white);
+    z-index: 2; /* Adjust if you have elements that should go over/under this overlay */
+}
+
+.header-content {
+  flex: 1; /* Takes up the full width it can, centering content */
+  text-align: center; /* Centers the content text */
+}
+.header-content h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow to text for better legibility */
+}
+.header-spacer {
+    width: 198px;  /* Approximate width of your button */
+    visibility: hidden;  /* Makes the spacer invisible */
+}
+
+.header-button {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: white; /* Text color set to white */
+    font-size: 1em; /* Similar to h1 size, adjust as needed */
+    font-weight: bold; /* Bold like h1 */
+    border: 2px solid white;
+    border-radius: 50px;
+    cursor: pointer; /* Cursor to pointer to indicate it's clickable */
+    text-decoration: none; /* Remove underline from link */
+    padding: 10px 20px; /* Padding to increase clickable area */
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition for color and shadow */
+    margin-left: 90px;
+}
+
+.header-button:hover {
+    border: 2px solid #7CFC00;
+    transition: color 0.5s ease;
+    border-radius: 50px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+     /* Add shadow to make it stand out */
+
+}
+
+#iitbhu-logo {
+    width: 120px; /* Making the icon bigger */
+    margin-bottom: 10px;
+}
+body {
+    font-size: 15px; /* Increase as needed */
+}
+main {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+#file-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+    gap: 20px; /* Adds space between the input groups */
+    max-width: 800px;
+    margin: auto; /* Centers the form horizontally */
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column; /* Stacks label above input within each group */
+}
+
+label {
+    margin-bottom: 5px; /* Space between label and input */
+}
+
+input[type="number"], input[type="file"] {
+    width: 100%; /* Full width to fill the input-group */
+    padding: 8px; /* Padding for better text visibility */
+    box-sizing: border-box; /* Includes padding in width */
+}
+
+button {
+    grid-column: 1 / -1; /* Spans the button across all columns */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+#result-display {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+#download-btn {
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green background for visibility */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#download-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+#result-display, #download-btn {
+    display: none; /* Initially hide the elements */
+}
+
+
+footer {
+  position: relative;
+  background-image: url('header.jpeg'); /* Adjust path as needed */
+ background-size: cover; /* Cover the entire footer area */
+ background-position: center; /* Center the background image */
+ color: #fff; /* Adjust text color for readability */
+    text-align: center;
+    padding: 20px;
+    margin-top: auto; /* Pushes the footer to the bottom */
+    font-size: 12px; /* Making the font size smaller */
+    line-height: 0.8;
+}
+footer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 7px; /* Height of the gradient effect */
+    background: linear-gradient(to top, transparent, white); /* Starts transparent, blending to white */
+    z-index: 1;
+}
+
+</style>
+</head>
+<body>
+    <header>
+
+        <a href="index.html" class="header-button">Home</a>
+        <div class="header-content">
+            <img src="icon.png" alt="IIT BHU Logo" id="iitbhu-logo">
+            <h1>Cost Estimation</h1>
+        </div>
+        <div class="header-spacer"></div>
+    </header>
+    <main>
+      <form id="file-form">
+    <div class="input-group">
+        <label for="gcode-file">Upload G-code File:</label>
+        <input type="file" id="gcode-file" accept=".txt,.gcode">
+    </div>
+    <div class="input-group">
+        <label for="current">Current (A):</label>
+        <input type="number" id="current" placeholder="Enter current in ampere">
+    </div>
+    <div class="input-group">
+        <label for="voltage">Voltage (V):</label>
+        <input type="number" id="voltage" placeholder="Enter voltage in volt">
+    </div>
+    <div class="input-group">
+        <label for="weld-speed">Weld Speed (mm/s):</label>
+        <input type="number" id="weld-speed" placeholder="Enter weld speed in mm/s">
+    </div>
+
+    <div class="input-group">
+        <label for="wire-feed-rate">Wire Feed Rate (mm/s):</label>
+        <input type="number" id="wire-feed-rate" placeholder="Enter wire feed rate in mm/s">
+    </div>
+
+    <div class="input-group">
+        <label for="wire-density">Wire Density (g/cm³):</label>
+        <input type="number" id="wire-density" placeholder="Enter wire density in g/cm³">
+    </div>
+
+    <div class="input-group">
+        <label for="wire-diameter">Wire Diameter (mm):</label>
+        <input type="number" id="wire-diameter" placeholder="Enter wire diameter in mm">
+    </div>
+
+    <div class="input-group">
+        <label for="wire-price">Wire Price per kg (INR):</label>
+        <input type="number" id="wire-price" placeholder="Enter wire price per kg in INR">
+    </div>
+    <div class="input-group">
+        <label for="gas-flow-rate">Gas Flow Rate (liters/min):</label>
+        <input type="number" id="gas-flow-rate" placeholder="Enter gas flow rate in liters/min">
+    </div>
+    <div class="input-group">
+        <label for="gas-flow-rate">Pressure (Bar):</label>
+        <input type="number" id="pressure" placeholder="Enter Pressure in Bar">
+    </div>
+    <div class="input-group">
+        <label for="gas-price">Gas Price per liter (INR):</label>
+        <input type="number" id="gas-price" placeholder="Enter gas price per liter in INR">
+    </div>
+    <div class="input-group">
+        <label for="electricity-price">Electricity Price per kWh (INR):</label>
+        <input type="number" id="electricity-price" placeholder="Enter electricity price per kWh in INR">
+    </div>
+    <button type="button" id="convert-button">Estimate Cost</button>
+    <div id="result-display"></div>
+<button type="button" id="download-btn">Download Results</button>
+</form>
+
+
+    </main>
+    <footer>
+        <p>developed by Harshit Gupta</p>
+        <p>Indian Institute of Technology (BHU), Varanasi</p>
+    </footer>
+    <script>
+
+
+    function parseGCode(gcodeText) {
+    const lines = gcodeText.split('\n');
+    const coordinates = [];
+    let currentZ = 0; // Variable to keep track of the current Z value
+
+    lines.forEach(line => {
+        if (line.startsWith(';')) return; // Skip comments
+
+        const parts = line.split(' ').filter(Boolean);
+        const command = parts[0];
+        let coord = { x: null, y: null, z: currentZ, k: command === "G0" ? 0 : 1 }; // Initialize with currentZ
+
+        if (command === "G0" || command === "G1") {
+            parts.forEach(part => {
+                if (part.startsWith('X')) {
+                    coord.x = parseFloat(part.substring(1));
+                } else if (part.startsWith('Y')) {
+                    coord.y = parseFloat(part.substring(1));
+                } else if (part.startsWith('Z')) {
+                    coord.z = parseFloat(part.substring(1));
+                    currentZ = coord.z; // Update currentZ with the new Z value
+                }
+            });
+
+            // Push the coordinate only if X or Y is specified; Z alone doesn't indicate a move or draw command
+            if (coord.x !== null || coord.y !== null) {
+                coordinates.push(coord);
+            }
+        }
+    });
+
+    return coordinates;
+}
+function calculateDistance(pointA, pointB) {
+    return Math.sqrt(
+        Math.pow(pointB.x - pointA.x, 2) +
+        Math.pow(pointB.y - pointA.y, 2) +
+        Math.pow(pointB.z - pointA.z, 2)
+    );
+}
+function calculateAdditionalGasTime(coordinates, additionalGasTime) {
+    let totalGasOnTime = 0;
+    let isPrinting = false;
+    let segmentcnt=0;
+    coordinates.forEach((point, index) => {
+        if (point.k === 1) {
+            if (!isPrinting) {
+                segmentcnt=0;
+                isPrinting = true;
+                // Start of a new segment, add 0.3 seconds
+                totalGasOnTime += additionalGasTime;
+            }
+            segmentcnt++;
+        } else {
+            if (isPrinting) {
+                // End of current segment, add 0.3 seconds
+                if(segmentcnt==1)
+                totalGasOnTime -= additionalGasTime;
+                else
+                totalGasOnTime += additionalGasTime;
+                isPrinting = false;
+            }
+        }
+    });
+
+    // If the last segment ends and was printing
+    if (isPrinting) {
+        totalGasOnTime += additionalGasTime;
+    }
+
+    return totalGasOnTime;
+}
+function totalPrintingDistance(coordinates) {
+    let totalDistance = 0;
+    let segmentDistance = 0;
+    let printing = false;
+    let previousPoint = null;
+
+    coordinates.forEach(point => {
+        if (point.k === 1) {
+            if (!printing) {
+                // Start of a new printing segment
+                printing = true;
+                segmentDistance = 0; // Reset segment distance for a new segment
+            } else if (previousPoint) {
+                // Continue within the same segment
+                segmentDistance += calculateDistance(previousPoint, point);
+            }
+        } else if (printing) {
+            // End of a current printing segment
+            totalDistance += segmentDistance;
+            printing = false;
+            previousPoint=null;
+        }
+        // Update previousPoint only if currently printing
+        if (printing) {
+            previousPoint = point;
+        }
+    });
+
+    // If the last segment ends and was printing without a subsequent k=0
+    if (printing) {
+        totalDistance += segmentDistance;
+    }
+
+    return totalDistance;
+}
+document.getElementById('convert-button').addEventListener('click', function() {
+    const fileInput = document.getElementById('gcode-file');
+    const currentInput = document.getElementById('current');
+    const voltageInput = document.getElementById('voltage');
+    const weldSpeedInput = document.getElementById('weld-speed');
+    const wireFeedRateInput = document.getElementById('wire-feed-rate');
+    const wireDensityInput = document.getElementById('wire-density');
+    const wireDiameterInput = document.getElementById('wire-diameter');
+    const wirePriceInput = document.getElementById('wire-price');
+    const gasFlowRateInput = document.getElementById('gas-flow-rate');
+    const pressureInput = document.getElementById('pressure');
+    const gasPriceInput = document.getElementById('gas-price');
+    const electricityPriceInput = document.getElementById('electricity-price');
+
+    if (fileInput.files.length === 0) {
+        alert('No file selected.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const text = event.target.result;
+        const coordinates = parseGCode(text); // Assume parseGCode parses the text into the required format
+        const totalDistance = totalPrintingDistance(coordinates); // Your function to calculate distance
+        const current = parseFloat(currentInput.value);
+        const voltage = parseFloat(voltageInput.value);
+        const weldSpeed = parseFloat(weldSpeedInput.value);
+        const wireFeedRate = parseFloat(wireFeedRateInput.value);
+        const wireDensity = parseFloat(wireDensityInput.value);
+        const wireDiameter = parseFloat(wireDiameterInput.value);
+        const wirePrice = parseFloat(wirePriceInput.value);
+        const additionalGasTime = calculateAdditionalGasTime(coordinates,0.3);
+        const gasFlowRate = parseFloat(gasFlowRateInput.value);
+        const pressure = parseFloat(pressureInput.value);
+        const gasPrice = parseFloat(gasPriceInput.value);
+        const electricityPrice = parseFloat(electricityPriceInput.value);
+
+        if (isNaN(current) || current <= 0 ||
+            isNaN(voltage) || voltage <= 0 ||
+            isNaN(weldSpeed) || weldSpeed <= 0 ||
+            isNaN(wireFeedRate) || wireFeedRate <= 0 ||
+            isNaN(wireDensity) || wireDensity <= 0 ||
+            isNaN(wireDiameter) || wireDiameter <= 0 ||
+            isNaN(wirePrice) || wirePrice <= 0 ||
+            isNaN(gasFlowRate) || gasFlowRate <= 0 ||
+            isNaN(pressure) || pressure <= 0 ||
+            isNaN(electricityPrice) || electricityPrice <= 0 ||
+            isNaN(gasPrice) || gasPrice <= 0) {
+            alert('Please enter valid positive numbers for all fields.');
+            return;
+        }
+
+        const netPrintingTime = totalDistance / weldSpeed;
+        const totalWireLength = wireFeedRate * netPrintingTime;
+        const wireRadius = wireDiameter / 2;
+        const wireVolume = Math.PI * (wireRadius * wireRadius) * totalWireLength / 1000; // Volume in cubic cm
+        const totalMass = wireVolume * wireDensity; // Mass in grams
+        const totalMassKg = totalMass / 1000; // Convert grams to kilograms
+        const totalWireCost = totalMassKg * wirePrice; // Total wire cost in INR
+        const totalGasOnTime = netPrintingTime +  additionalGasTime; // Include gas before and after printing
+        const totalGasVolume = ((totalGasOnTime / 60) * gasFlowRate)/pressure; // Total gas volume in liters in Atmospheric Pressure
+        const totalGasCost = totalGasVolume * gasPrice; // Total gas cost in INR
+        const totalElectricalPower = (current*voltage*netPrintingTime)/60000;
+        const totalElectricalCost =  totalElectricalPower*electricityPrice; // Total electric Cost in INR
+        const totalCost = totalWireCost + totalGasCost + totalElectricalCost; // Total cost including wire and gas
+        // Display results on the webpage
+        const resultDisplay = document.getElementById('result-display');
+        resultDisplay.innerHTML = `
+            Total Printing Distance: ${totalDistance.toFixed(2)} mm<br>
+            Net Printing Time: ${netPrintingTime.toFixed(2)} seconds<br>
+            Total Wire Consumed: ${totalWireLength.toFixed(2)} mm<br>
+            Total Mass of Wire: ${totalMass.toFixed(2)} grams<br>
+            Total Gas On Time: ${totalGasOnTime.toFixed(2)} seconds<br>
+            Total Gas Volume: ${totalGasVolume.toFixed(2)} liters at 1 Atm<br>
+            Total Material Cost: ₹${totalWireCost.toFixed(2)}<br>
+            Total Gas Cost: ₹${totalGasCost.toFixed(2)}<br>
+            Total Electricity Cost: ₹${totalElectricalCost.toFixed(2)}<br>
+            Total Cost: ₹${totalCost.toFixed(2)}
+        `;
+        resultDisplay.style.display = 'block';
+        // Prepare download button action
+        const downloadBtn=document.getElementById('download-btn');
+        downloadBtn.style.display = 'block';
+        downloadBtn.onclick = function() {
+            const resultText = `
+            Total Printing Distance: ${totalDistance.toFixed(2)} mm
+            Net Printing Time: ${netPrintingTime.toFixed(2)} seconds
+            Total Wire Consumed: ${totalWireLength.toFixed(2)} mm
+            Total Mass of Wire: ${totalMass.toFixed(2)} grams
+            Total Gas On Time: ${totalGasOnTime.toFixed(2)} seconds
+            Total Gas Volume: ${totalGasVolume.toFixed(2)} liters at 1 Atm
+            Total Material Cost: ₹${totalWireCost.toFixed(2)}
+            Total Gas Cost: ₹${totalGasCost.toFixed(2)}
+            Total Electricity Cost: ₹${totalElectricalCost.toFixed(2)}
+            Total Cost: ₹${totalCost.toFixed(2)}
+            `;
+            downloadTextFile(resultText, 'Results.txt');
+        };
+    };
+
+    reader.readAsText(file);
+});
+
+function downloadTextFile(text, filename) {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+    </script>
+</body>
+</html>
